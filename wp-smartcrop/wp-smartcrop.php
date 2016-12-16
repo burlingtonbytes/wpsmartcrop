@@ -474,7 +474,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 		private function is_image_size_cropped( $size ) {
 			$_wp_additional_image_sizes = $GLOBALS['_wp_additional_image_sizes'];
-			if($size == 'full') {
+			if(!$size || $size == 'full') {
 				return false;
 			}
 			if( isset( $_wp_additional_image_sizes[ $size ] ) ) {

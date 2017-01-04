@@ -362,7 +362,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 				return;
 			}
 			$metadata = wp_generate_attachment_metadata( $attachment_id, $path );
-			if( !$metadata || is_empty( $metadata ) || is_wp_error( $metadata ) ) {
+			if( !$metadata || empty( $metadata ) || is_wp_error( $metadata ) ) {
 				return;
 			}
 			wp_update_attachment_metadata( $attachment_id, $metadata );
@@ -376,7 +376,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 			$file = get_attached_file( $attachment_id );
 			// hack for file_exists on windows servers
 			$file = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $file );
-			$basename = basename( $imagedata['file'] );
+			$basename = basename( $file );
 			$folder = $this->remove_postfix( $file, $basename );
 			foreach( $metadata['sizes'] as $size_name => $size_details ) {
 				if( $this->is_image_size_cropped( $size_name ) ) {

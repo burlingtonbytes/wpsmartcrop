@@ -40,7 +40,6 @@ jQuery(document).ready(function($) {
 
 	function get_crop_data($el) {
 		var get_smartcrop_offset = function(dim, orig_dim, focus_pos) {
-			console.log(dim, orig_dim, focus_pos);
 			var power_lines = [.33333, .5, .66667];
 			focus_pos = focus_pos / 100;
 			var focus_target = closest(focus_pos, power_lines);
@@ -70,7 +69,6 @@ jQuery(document).ready(function($) {
 		}
 		var final_dims = get_final_image_dims( natural_dims, target_dims );
 		var offsets = [0,0]
-		console.log(natural_dims, target_dims, final_dims);
 		if( target_dims[0]/target_dims[1] < final_dims[0]/final_dims[1] ) {
 			offsets[0] = get_smartcrop_offset(target_dims[0], final_dims[0], focal_point[0]);
 		} else {

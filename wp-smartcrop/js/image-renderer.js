@@ -1,5 +1,11 @@
 jQuery(document).ready(function($) {
 	var browser_supports_object_fit = (function() { // immediately invoked
+		// HACK -- CURRENT iOS SAFARI AND CHROME HAVE RENDERING ISSUES WITH OBJECTFIT
+		var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+		if( iOS ) {
+			return false;
+		}
+		// END HACK
 		var div = document.createElement("div");
 		if( "objectFit" in div.style && "objectPosition" in div.style ) {
 			return true;

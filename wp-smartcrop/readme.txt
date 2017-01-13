@@ -109,6 +109,9 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 == Changelog ==
 
+= 1.3.1 =
+* Fix issue with edge cases and focal positions of with 0 as a coordinate
+
 = 1.3.0 =
 * Provide better support for iOS devices
 * additional css tweaks for better universality

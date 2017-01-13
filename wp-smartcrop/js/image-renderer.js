@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
 			$el.width(),
 			$el.height()
 		];
-		if( !focal_point || !focal_point[0] || !focal_point[1] ||
+		if( !focal_point || focal_point.length < 2 ||
 		    !natural_dims[0] || !natural_dims[1] ||
 		    !target_dims[0] || !target_dims[1] ) {
 			return false;

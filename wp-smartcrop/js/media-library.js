@@ -1,13 +1,17 @@
 (function( $ ) {
 	var position_image_overlay = function( $image, $overlay ) {
 		var image_pos = $image.position();
+		var image_margin_left = $image.css('margin-left');
+		var image_margin_right = $image.css('margin-right');
 		$overlay.css({
-			position : 'absolute',
-			opacity  : '0.4',
-			top      : image_pos.top,
-			left     : image_pos.left,
-			width    : $image.width()+'px',
-			height   : $image.height()+'px',
+			'position'    : 'absolute',
+			'opacity'     : '0.4',
+			'top'         : image_pos.top,
+			'left'        : image_pos.left,
+			'width'       : $image.width()+'px',
+			'height'      : $image.height()+'px',
+			'margin-left' : image_margin_left,
+			'margin-right': image_margin_right
 		});
 
 		var gnomon_width  = parseInt( $('.wpsmartcrop_image_focus_left').val() ) + '%';

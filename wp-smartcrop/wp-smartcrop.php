@@ -3,7 +3,7 @@
   Plugin Name: WP SmartCrop
   Plugin URI: http://www.wpsmartcrop.com/
   Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
-  Version: 1.3.2
+  Version: 1.4.0
   Author: WP SmartCrop
   Author URI: http://www.wpsmartcrop.com
   License: GPLv2 or later
@@ -12,7 +12,7 @@
 
 if( !class_exists('WP_Smart_Crop') ) {
 	class WP_Smart_Crop {
-		public  $version = '1.2.0';
+		public  $version = '1.5.0';
 		private $plugin_dir_path;
 		private $plugin_dir_url;
 		private $current_image = null;
@@ -301,7 +301,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		function wp_enqueue_scripts() {
 			wp_enqueue_script( 'jquery' );
-			wp_enqueue_script( 'wp-smart-crop-renderer', $this->plugin_dir_url . 'js/image-renderer.js', array( 'jquery' ), $this->version, true );
+			wp_enqueue_script( 'jquery.wp-smartcrop', $this->plugin_dir_url . 'js/jquery.wp-smartcrop.js', array( 'jquery' ), $this->version, true );
 			wp_enqueue_style( 'wp-smart-crop-renderer', $this->plugin_dir_url . 'css/image-renderer.css', array(), $this->version );
 		}
 
@@ -474,7 +474,11 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 		private function is_image_size_cropped( $size ) {
 			$_wp_additional_image_sizes = $GLOBALS['_wp_additional_image_sizes'];
-			if(!$size || $size == 'full' || is_array( $size )) {
+			// array sizes are assumed to be cropped... use names, as suggested by WordPress
+			if( $size && is_array( $size ) ) {
+				return true;
+			}
+			if(!$size || $size == 'full' ) {
 				return false;
 			}
 			if( isset( $_wp_additional_image_sizes[ $size ] ) ) {

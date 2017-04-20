@@ -111,6 +111,7 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 = 1.4.0 =
 * abstract wp-smartcrop into a jquery plugin
+* repair list view in media library
 
 = 1.3.2 =
 * Fix focal point selection at large resolutions

@@ -5,7 +5,7 @@
 // ==/ClosureCompiler==
 
 /**
- * jQuery WP-SmartCrop v1.4.1
+ * jQuery WP-SmartCrop v1.4.2
  * Copyright (c) 2017 Greg Schoppe
  * License: http://www.opensource.org/licenses/mit-license.php
  **/

@@ -5,7 +5,7 @@
 // ==/ClosureCompiler==
 
 /**
- * jQuery WP-SmartCrop v1.5.0
+ * jQuery WP-SmartCrop v1.4.1
  * Copyright (c) 2017 Greg Schoppe
  * License: http://www.opensource.org/licenses/mit-license.php
  **/
@@ -210,6 +210,9 @@
 				resizer_frame_request = requestFrame(function() {
 					recrop_images( $this, use_object_fit );
 				});
+			});
+			$(window).load(function() {
+				recrop_images( $this, use_object_fit );
 			});
 			$this.on('wpsmartcrop-redraw', function() {
 				recrop_images( $this, use_object_fit );

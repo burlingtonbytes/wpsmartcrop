@@ -108,6 +108,8 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 
 == Changelog ==
+= 1.4.1 =
+* add unnecessary $(window).load event, to solve intermittent issues in Edge Browser
 
 = 1.4.0 =
 * abstract wp-smartcrop into a jquery plugin

@@ -1,9 +1,3 @@
-// ==ClosureCompiler==
-// @compilation_level ADVANCED_OPTIMIZATIONS
-// @output_file_name jquery.wp-smartcrop.min.js
-// @externs_url https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-3.1.js
-// ==/ClosureCompiler==
-
 /**
  * jQuery WP-SmartCrop v1.4.2
  * Copyright (c) 2017 Greg Schoppe

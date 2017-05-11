@@ -3,7 +3,7 @@
   Plugin Name: WP SmartCrop
   Plugin URI: http://www.wpsmartcrop.com/
   Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
-  Version: 1.4.2
+  Version: 1.4.3
   Author: WP SmartCrop
   Author URI: http://www.wpsmartcrop.com
   License: GPLv2 or later
@@ -12,7 +12,7 @@
 
 if( !class_exists('WP_Smart_Crop') ) {
 	class WP_Smart_Crop {
-		public  $version = '1.4.2';
+		public  $version = '1.4.3';
 		private $plugin_dir_path;
 		private $plugin_dir_url;
 		private $current_image = null;
@@ -66,7 +66,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 
 		function plugin_action_links( $links ) {
-			$links[] = '<a href="'. esc_url( get_admin_url(null, 'options-general.php?page=wp-smartcrop') ) .'">Settings</a>';
+			$links[] = '<a href="'. esc_url( get_admin_url(null, 'tools.php?page=wp-smartcrop') ) .'">Settings</a>';
 			$links[] = '<a href="http://www.wpsmartcrop.com/addons" target="_blank">Get Addons</a>';
 			return $links;
 		}

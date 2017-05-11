@@ -108,6 +108,9 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 
 == Changelog ==
+= 1.4.3 =
+* fix settings link on plugins page
+
 = 1.4.2 =
 * switch to minified js
 

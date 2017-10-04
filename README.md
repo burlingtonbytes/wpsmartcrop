@@ -69,8 +69,3 @@ A. We love to see theme integrations, but reach out to us first, at admin@wpsmar
 
 ### Q. Your plugin is bad, and you should feel bad!
 A. That's not really a question, but at least our moms like us. Feel free to send your 'constructive criticism' to admin@wpsmartcrop.com, or leave us a review/rating.
-
-## Changelog
-
-### 1.0.0
-* Initial Release

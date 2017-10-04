@@ -1,18 +1,18 @@
 <?php if(!defined('ABSPATH')) { die(); } // Include in all php files, to prevent direct execution
 /**
-  Plugin Name: WP SmartCrop
-  Plugin URI: http://www.wpsmartcrop.com/
-  Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
-  Version: 1.4.3
-  Author: WP SmartCrop
-  Author URI: http://www.wpsmartcrop.com
-  License: GPLv2 or later
-  Text Domain: wpsmartcrop
-*/
+ * Plugin Name: WP SmartCrop
+ * Plugin URI: http://www.wpsmartcrop.com/
+ * Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
+ * Version: 1.4.3
+ * Author: Burlington Bytes
+ * Author URI: https://www.burlingtonbytes.com
+ * License: GPLv2 or later
+ * Text Domain: wpsmartcrop
+ **/
 
 if( !class_exists('WP_Smart_Crop') ) {
 	class WP_Smart_Crop {
-		public  $version = '1.4.3';
+		public  $version = '1.4.4';
 		private $plugin_dir_path;
 		private $plugin_dir_url;
 		private $current_image = null;
@@ -218,9 +218,16 @@ if( !class_exists('WP_Smart_Crop') ) {
 				$focus  = get_post_meta( $post->ID, '_wpsmartcrop_image_focus', true );
 				if( !$focus || !is_array( $focus ) || !isset( $focus['left'] ) || !isset( $focus['top'] ) ) {
 					$focus = array(
-						'left' => '',
-						'top'  => ''
+						'left' => '50',
+						'top'  => '50'
 					);
+					$default_focus = apply_filters( 'wpsmartcrop_default_focus', array(50, 50), $id );
+					if( count( $default_focus > 1 ) ) {
+						$focus = array(
+							'left' => $default_focus[0],
+							'top'  => $default_focus[1]
+						);
+					}
 				}
 
 				// build html for form interface
@@ -467,6 +474,9 @@ if( !class_exists('WP_Smart_Crop') ) {
 						}
 						$this->focus_cache[ $id ][ $size ] = $ret_val;
 						return $ret_val;
+					} else {
+						$default_focus = apply_filters( 'wpsmartcrop_default_focus', array(50, 50), $id );
+						$ret_val = json_encode( $default_focus );
 					}
 				}
 			}

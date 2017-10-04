@@ -1,5 +1,5 @@
 /**
- * jQuery WP-SmartCrop v1.4.2
+ * jQuery WP-SmartCrop v1.4.4
  * Copyright (c) 2017 Greg Schoppe
  * License: http://www.opensource.org/licenses/mit-license.php
  **/
@@ -43,12 +43,6 @@
 
 		// check if the browser supports objectfit
 		var browser_supports_object_fit = (function() { // immediately invoked
-			// HACK -- CURRENT iOS SAFARI AND CHROME HAVE RENDERING ISSUES WITH OBJECTFIT
-			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-			if( iOS ) {
-				return false;
-			}
-			// END HACK
 			var div = document.createElement("div");
 			if( "objectFit" in div.style && "objectPosition" in div.style ) {
 				return true;
@@ -205,7 +199,7 @@
 					recrop_images( $this, use_object_fit );
 				});
 			});
-			$(window).load(function() {
+			$(window).on('load', function() {
 				recrop_images( $this, use_object_fit );
 			});
 			$this.on('wpsmartcrop-redraw', function() {

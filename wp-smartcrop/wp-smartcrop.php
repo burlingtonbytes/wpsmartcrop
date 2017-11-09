@@ -3,7 +3,7 @@
  * Plugin Name: WP SmartCrop
  * Plugin URI: http://www.wpsmartcrop.com/
  * Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
- * Version: 1.4.4
+ * Version: 1.4.5
  * Author: Burlington Bytes
  * Author URI: https://www.burlingtonbytes.com
  * License: GPLv2 or later
@@ -12,7 +12,7 @@
 
 if( !class_exists('WP_Smart_Crop') ) {
 	class WP_Smart_Crop {
-		public  $version = '1.4.4';
+		public  $version = '1.4.5';
 		private $plugin_dir_path;
 		private $plugin_dir_url;
 		private $current_image = null;
@@ -221,7 +221,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 						'left' => '50',
 						'top'  => '50'
 					);
-					$default_focus = apply_filters( 'wpsmartcrop_default_focus', array(50, 50), $id );
+					$default_focus = apply_filters( 'wpsmartcrop_default_focus', array(50, 50), $post->ID );
 					if( count( $default_focus > 1 ) ) {
 						$focus = array(
 							'left' => $default_focus[0],
@@ -238,7 +238,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 				<input type="hidden"   class="wpsmartcrop_image_focus_left" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][left]" value="<?php echo $focus['left']; ?>" />
 				<input type="hidden"   class="wpsmartcrop_image_focus_top"  name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][top]"  value="<?php echo $focus['top' ]; ?>" />
 				<em>Select a focal point for this image by clicking on the preview image</em>
-				<script src="<?php echo $this->plugin_dir_url;?>js/media-library.js" type="text/javascript"></script>
+				<script src="<?php echo $this->plugin_dir_url;?>js/media-library.js?v=<?php echo esc_attr( $this->version ); ?>" type="text/javascript"></script>
 				<?php
 				$focal_point_html = ob_get_clean();
 				$form_fields = array(

@@ -61,7 +61,6 @@
 		position_image_overlay( $image, $overlay );
 
 		$('body').on('click', '.wpsmartcrop_image_overlay', function(e) {
-			console.log('clicked');
 			var $this = $(this);
 			var offset = $this.offset();
 			var pos_x = e.pageX - offset.left;
@@ -79,6 +78,9 @@
 	};
 
 	var $image = $('.media-frame-content .attachment-details .thumbnail img');
+	if( $('body').hasClass('post-type-attachment') ) {
+		$image = $('.wp_attachment_holder .wp_attachment_image img.thumbnail');
+	}
 	if( $image.prop('complete') ) {
 		load_overlay( $image );
 	} else {

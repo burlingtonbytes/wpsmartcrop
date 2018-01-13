@@ -108,6 +108,12 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 
 == Changelog ==
+= 1.4.6 =
+* version bump in attempt to fix wordpress.org listing bug
+
+= 1.4.5 =
+* Fix for list view
+
 = 1.4.4 =
 * center smartcrop focus by default.
 * fix conflict with jQuery 3.0+

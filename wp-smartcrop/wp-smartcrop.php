@@ -222,7 +222,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 						'top'  => '50'
 					);
 					$default_focus = apply_filters( 'wpsmartcrop_default_focus', array(50, 50), $post->ID );
-					if( count( $default_focus > 1 ) ) {
+					if( count( $default_focus ) > 1 ) {
 						$focus = array(
 							'left' => $default_focus[0],
 							'top'  => $default_focus[1]

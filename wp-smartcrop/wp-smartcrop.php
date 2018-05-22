@@ -87,6 +87,13 @@ if( !class_exists('WP_Smart_Crop') ) {
 				'wp-smartcrop',
 				'wp-smartcrop-settings'
 			);
+			add_settings_field(
+				'wp_smartcrop_auto_enable',
+				__( 'Auto Enable Smartcrop', 'wpsmartcrop' ),
+				array( $this, 'wp_smartcrop_auto_enable' ),
+				'wp-smartcrop',
+				'wp-smartcrop-settings'
+			);
 
 			$upload_processors = apply_filters( 'wp_smartcrop_announce_upload_processors', array() );
 			// THIS IS WHERE WE EVENTUALLY SORT THE STACK ON THE BACK END
@@ -102,6 +109,11 @@ if( !class_exists('WP_Smart_Crop') ) {
 			} else {
 				$sanitized['disable-thumbnails'] = 0;
 			}
+			if( isset( $settings['auto-enable'] ) && $settings['auto-enable'] ) {
+				$sanitized['auto-enable'] = 1;
+			} else {
+				$sanitized['auto-enable'] = 0;
+			}
 			return apply_filters( 'wp_smartcrop_sanitize_settings', $sanitized, $settings );
 		}
 
@@ -113,14 +125,26 @@ if( !class_exists('WP_Smart_Crop') ) {
 				$disable_thumbs = $this->options['disable-thumbnails'];
 			}
 			?>
-			<input type='checkbox' name='wp-smartcrop-settings[disable-thumbnails]' <?php checked( $disable_thumbs, 1 ); ?> value='1'>
-			<label for='wp-smartcrop-settings[disable-thumbnails]'><?php _e( 'Disable thumbnail generation (not recommended)' ); ?></label>
-			<p><em>
-				<?php
-				_e('Disabling thumbnail generation allows you to manage legacy thumbnail cropping with other plugins, such as Manual Image Crop.');
-				echo " ";
-				_e('It also will prevent conflicts with plugins like Jetpack\'s Photon CDN, which sadly break thumbnail regeneration.');
-				?></em></p>
+            <input type='checkbox' name='wp-smartcrop-settings[disable-thumbnails]' <?php checked( $disable_thumbs, 1 ); ?> value='1'>
+            <label for='wp-smartcrop-settings[disable-thumbnails]'><?php _e( 'Disable thumbnail generation (not recommended)' ); ?></label>
+            <p><em>
+					<?php
+					_e('Disabling thumbnail generation allows you to manage legacy thumbnail cropping with other plugins, such as Manual Image Crop.');
+					echo " ";
+					_e('It also will prevent conflicts with plugins like Jetpack\'s Photon CDN, which sadly break thumbnail regeneration.');
+					?>
+                </em></p>
+			<?php
+		}
+		function wp_smartcrop_auto_enable () {
+			$auto_enable = 0;
+			if( isset( $this->options['auto-enable'] ) ) {
+				$auto_enable = $this->options['auto-enable'];
+			}
+			?>
+            <label><input type="checkbox" name="wp-smartcrop-settings[auto-enable]" <?php checked ($auto_enable, 1); ?> value="1">
+				<?php _e('Enable Smartcrop by default on all new uploads'); ?>
+            </label>
 			<?php
 		}
 
@@ -139,16 +163,16 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		function submenu_page() {
 			?>
-			<form action='options.php' method='post'>
-				<div class='wrap'>
-					<h1>WP SmartCrop</h1>
+            <form action='options.php' method='post'>
+                <div class='wrap'>
+                    <h1>WP SmartCrop</h1>
 					<?php
 					settings_fields( 'wp-smartcrop' );
 					do_settings_sections( 'wp-smartcrop' );
 					submit_button();
 					?>
-				</div>
-			</form>
+                </div>
+            </form>
 			<?php
 		}
 
@@ -190,11 +214,12 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 
 		function add_attachment( $attachment_id ) {
-			if( $this->upload_focus ) {
+			if( $this->upload_focus || $this->options['auto-enable'] == 1 ) {
 				$type = get_post_mime_type( $attachment_id );
 				if( substr( $type, 0, 6 ) == 'image/' ) {
+					$focus = $this->upload_focus ? $this->upload_focus : apply_filters( 'wpsmartcrop_default_focus', array(50, 50) );
 					update_post_meta( $attachment_id, '_wpsmartcrop_enabled', 1 );
-					update_post_meta( $attachment_id, '_wpsmartcrop_image_focus', $this->upload_focus );
+					update_post_meta( $attachment_id, '_wpsmartcrop_image_focus', $focus );
 				}
 				$this->upload_focus = null;
 			}
@@ -202,14 +227,14 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		function admin_head() {
 			?>
-			<style type="text/css">
-				.wpsmartcrop_strip_pseudos:before {
-					display: none !important;
-				}
-				.wpsmartcrop_strip_pseudos:after {
-					display: none !important;
-				}
-			</style>
+            <style type="text/css">
+                .wpsmartcrop_strip_pseudos:before {
+                    display: none !important;
+                }
+                .wpsmartcrop_strip_pseudos:after {
+                    display: none !important;
+                }
+            </style>
 			<?php
 		}
 		function attachment_fields_to_edit( $form_fields, $post ) {
@@ -233,21 +258,21 @@ if( !class_exists('WP_Smart_Crop') ) {
 				// build html for form interface
 				ob_start();
 				?>
-				<input type="checkbox" class="wpsmartcrop_enabled" id="wpsmartcrop_enabled" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_enabled]" value="1"<?php echo ( $enabled == 1 ) ? ' checked="checked"' : '';?> />
-				<label for="wpsmartcrop_enabled">Enable Smart Cropping</label><br/>
-				<input type="hidden"   class="wpsmartcrop_image_focus_left" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][left]" value="<?php echo $focus['left']; ?>" />
-				<input type="hidden"   class="wpsmartcrop_image_focus_top"  name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][top]"  value="<?php echo $focus['top' ]; ?>" />
-				<em>Select a focal point for this image by clicking on the preview image</em>
-				<script src="<?php echo $this->plugin_dir_url;?>js/media-library.js?v=<?php echo esc_attr( $this->version ); ?>" type="text/javascript"></script>
+                <input type="checkbox" class="wpsmartcrop_enabled" id="wpsmartcrop_enabled" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_enabled]" value="1"<?php echo ( $enabled == 1 ) ? ' checked="checked"' : '';?> />
+                <label for="wpsmartcrop_enabled">Enable Smart Cropping</label><br/>
+                <input type="hidden"   class="wpsmartcrop_image_focus_left" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][left]" value="<?php echo $focus['left']; ?>" />
+                <input type="hidden"   class="wpsmartcrop_image_focus_top"  name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][top]"  value="<?php echo $focus['top' ]; ?>" />
+                <em>Select a focal point for this image by clicking on the preview image</em>
+                <script src="<?php echo $this->plugin_dir_url;?>js/media-library.js?v=<?php echo esc_attr( $this->version ); ?>" type="text/javascript"></script>
 				<?php
 				$focal_point_html = ob_get_clean();
 				$form_fields = array(
-					'wpsmartcrop_image_focal_point' => array(
-						'input' => 'html',
-						'label' => __( 'Smart Crop' ),
-						'html'  => $focal_point_html
-					)
-				) + $form_fields;
+					               'wpsmartcrop_image_focal_point' => array(
+						               'input' => 'html',
+						               'label' => __( 'Smart Crop' ),
+						               'html'  => $focal_point_html
+					               )
+				               ) + $form_fields;
 			}
 			return $form_fields;
 		}

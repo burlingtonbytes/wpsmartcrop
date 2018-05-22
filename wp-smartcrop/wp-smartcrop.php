@@ -128,12 +128,12 @@ if( !class_exists('WP_Smart_Crop') ) {
 			<input type='checkbox' name='wp-smartcrop-settings[disable-thumbnails]' <?php checked( $disable_thumbs, 1 ); ?> value='1'>
 			<label for='wp-smartcrop-settings[disable-thumbnails]'><?php _e( 'Disable thumbnail generation (not recommended)' ); ?></label>
 			<p><em>
-					<?php
-					_e('Disabling thumbnail generation allows you to manage legacy thumbnail cropping with other plugins, such as Manual Image Crop.');
-					echo " ";
-					_e('It also will prevent conflicts with plugins like Jetpack\'s Photon CDN, which sadly break thumbnail regeneration.');
-					?>
-				</em></p>
+				<?php
+				_e('Disabling thumbnail generation allows you to manage legacy thumbnail cropping with other plugins, such as Manual Image Crop.');
+				echo " ";
+				_e('It also will prevent conflicts with plugins like Jetpack\'s Photon CDN, which sadly break thumbnail regeneration.');
+				?>
+			</em></p>
 			<?php
 		}
 		function wp_smartcrop_auto_enable () {
@@ -267,12 +267,12 @@ if( !class_exists('WP_Smart_Crop') ) {
 				<?php
 				$focal_point_html = ob_get_clean();
 				$form_fields = array(
-								   'wpsmartcrop_image_focal_point' => array(
-									   'input' => 'html',
-									   'label' => __( 'Smart Crop' ),
-									   'html'  => $focal_point_html
-								   )
-							   ) + $form_fields;
+					'wpsmartcrop_image_focal_point' => array(
+						'input' => 'html',
+						'label' => __( 'Smart Crop' ),
+						'html'  => $focal_point_html
+					)
+				) + $form_fields;
 			}
 			return $form_fields;
 		}

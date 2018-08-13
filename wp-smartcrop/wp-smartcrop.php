@@ -307,8 +307,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 
 		function wp_enqueue_scripts() {
-			wp_enqueue_script( 'jquery' );
-			wp_enqueue_script( 'jquery.wp-smartcrop', $this->plugin_dir_url . 'js/jquery.wp-smartcrop.min.js', array( 'jquery' ), $this->version, true );
+			wp_enqueue_script( 'wp-smartcrop', $this->plugin_dir_url . 'js/wp-smartcrop.min.js', array(), $this->version, true );
 			wp_enqueue_style( 'wp-smart-crop-renderer', $this->plugin_dir_url . 'css/image-renderer.css', array(), $this->version );
 		}
 

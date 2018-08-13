@@ -2,17 +2,18 @@
     var position_image_overlay = function( img, overlay ) {
         var img_margin_left = img.style.marginLeft;
         var img_margin_right = img.style.marginRight;
+        var overlay_style = {
+            'position'   : 'absolute',
+            'opacity'    : '0.4',
+            'top'        : img.offsetTop + 'px',
+            'left'       : img.offsetLeft + 'px',
+            'width'      : img.offsetWidth +'px',
+            'height'     : img.offsetHeight +'px',
+            'marginLeft' : img_margin_left,
+            'marginRight': img_margin_right
+        };
+        overlay = set_object_styles( overlay, overlay_style )
 
-        Object.assign(overlay.style, {
-            position: 'absolute',
-            opacity:  '0.4',
-            top:      img.offsetTop + 'px',
-            left:     img.offsetLeft + 'px',
-            width:    img.offsetWidth +'px',
-            height:   img.offsetHeight +'px',
-            marginLeft: img_margin_left,
-            marginRight: img_margin_right
-        });
 
         var gnomon_left = document.querySelector('.wpsmartcrop_image_focus_left');
         var gnomon_width = parseInt(gnomon_left.value) + '%';
@@ -52,7 +53,7 @@
             'margin'      : '0px',
             'padding'     : '0px',
             'boxSizing'   : 'border-box',
-            'borderRight': '1px solid #f00'
+            'borderRight' : '1px solid #f00'
         };
         gnomon_left = set_object_styles( gnomon_left, gnomon_left_styles )
 

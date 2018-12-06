@@ -36,7 +36,8 @@
 			'margin'        : 0,
 			'padding'       : 0,
 			'box-sizing'    : 'border-box',
-			'border-right'  : '1px solid #f00',
+			'border-right'  : '2px solid #070',
+			'box-shadow'    : 'inset -2px 0 0 0 #FFF, 2px 0 0 0 #FFF'
 		});
 		var $gnomon_top  = $('<div></div>').addClass('wpsmartcrop_image_gnomon_top').width('100%').height(0).css({
 			'position'      : 'absolute',
@@ -45,7 +46,8 @@
 			'margin'        : 0,
 			'padding'       : 0,
 			'box-sizing'    : 'border-box',
-			'border-bottom' : '1px solid #f00',
+			'border-bottom' : '2px solid #070',
+			'box-shadow'    : 'inset 0 -2px 0 0 #FFF, 0 2px 0 0 #FFF'
 		});
 		$('.wpsmartcrop_image_overlay').remove();
 		var $overlay = $('<div></div>').addClass('wpsmartcrop_image_overlay').append( $gnomon_left , $gnomon_top ).insertAfter($image);
@@ -78,9 +80,10 @@
 	};
 
 	var $image = $('.media-frame-content .attachment-details .thumbnail img');
-	if( $('body').hasClass('post-type-attachment') ) {
+	if( ( !$image || !$image.length ) && $('body').hasClass('post-type-attachment') ) {
 		$image = $('.wp_attachment_holder .wp_attachment_image img.thumbnail');
 	}
+	console.log($image);
 	if( $image.prop('complete') ) {
 		load_overlay( $image );
 	} else {

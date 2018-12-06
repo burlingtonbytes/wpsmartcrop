@@ -108,6 +108,10 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 
 == Changelog ==
+
+= 1.5.0 =
+* fix compatibility with modals in the media library's grid view 
+
 = 1.4.7 =
 * fix misplaced parenthesis on count causing warnings on php 7
 

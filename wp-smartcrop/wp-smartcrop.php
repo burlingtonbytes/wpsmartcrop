@@ -504,7 +504,6 @@ if( !class_exists('WP_Smart_Crop') ) {
 		private function get_image_sizes() {
 			global $_wp_additional_image_sizes;
 			$custom_sizes = $_wp_additional_image_sizes;
-			var_dump($custom_sizes);
 			if(!is_array($custom_sizes)) {
 			    $custom_sizes = array();
             }

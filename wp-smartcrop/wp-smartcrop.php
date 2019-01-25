@@ -487,8 +487,6 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		private function is_image_size_cropped( $size ) {
 		    $image_sizes = $this->get_image_sizes();
-//		    var_dump($image_sizes);
-			// array sizes are assumed to be cropped... use names, as suggested by WordPress
 			if( $size && is_array( $size ) ) {
 				return true;
 			}
@@ -510,9 +508,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 			if(!is_array($custom_sizes)) {
 			    $custom_sizes = array();
             }
-
 			$sizes = array();
-
 			foreach ( get_intermediate_image_sizes() as $_size ) {
 				if ( !in_array( $_size, $custom_sizes ) ) {
                     $temp = array(

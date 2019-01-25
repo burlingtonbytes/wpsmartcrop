@@ -481,8 +481,13 @@ if( !class_exists('WP_Smart_Crop') ) {
 			}
 			return false;
 		}
+
+
+
+
 		private function is_image_size_cropped( $size ) {
-			$_wp_additional_image_sizes = $GLOBALS['_wp_additional_image_sizes'];
+		    $image_sizes = $this->get_image_sizes();
+//		    var_dump($image_sizes);
 			// array sizes are assumed to be cropped... use names, as suggested by WordPress
 			if( $size && is_array( $size ) ) {
 				return true;
@@ -490,15 +495,49 @@ if( !class_exists('WP_Smart_Crop') ) {
 			if(!$size || $size == 'full' ) {
 				return false;
 			}
-			if( isset( $_wp_additional_image_sizes[ $size ] ) ) {
-				return (bool) intval( $_wp_additional_image_sizes[ $size ]['crop'] );
-			}
-			if( in_array( $size, array('thumbnail', 'medium', 'medium_large', 'large') ) ) {
-				return (bool) intval( get_option( $size . "_crop" ) );
+			if( isset( $image_sizes[ $size ] ) && isset($image_sizes[ $size ]['crop']) ) {
+
+				return (bool) intval( $image_sizes[ $size ]['crop'] );
 			}
 			// if we can't find the size, lets assume it is cropped... it's a guess
 			return true;
 		}
+
+		private function get_image_sizes() {
+			global $_wp_additional_image_sizes;
+			$custom_sizes = $_wp_additional_image_sizes;
+			var_dump($custom_sizes);
+			if(!is_array($custom_sizes)) {
+			    $custom_sizes = array();
+            }
+
+			$sizes = array();
+
+			foreach ( get_intermediate_image_sizes() as $_size ) {
+				if ( !in_array( $_size, $custom_sizes ) ) {
+                    $temp = array(
+                        'width'  => get_option( "{$_size}_size_w" ),
+                        'height' => get_option( "{$_size}_size_h" ),
+						'crop'   => get_option( "{$_size}_crop" ),
+                    );
+
+                    if( $temp['width'] || $temp['height'] ) {
+                        $sizes[ $_size ] = $temp;
+                    }
+				} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+					$sizes[ $_size ] = array(
+						'width'  => $_wp_additional_image_sizes[ $_size ]['width'],
+						'height' => $_wp_additional_image_sizes[ $_size ]['height'],
+						'crop'   => $_wp_additional_image_sizes[ $_size ]['crop'],
+					);
+				}
+			}
+
+			return $sizes;
+		}
+
+
+
 
 		private function extract_tags( $html, $tag, $selfclosing = null, $return_the_entire_tag = false, $charset = 'ISO-8859-1' ){
 			if ( is_array($tag) ){

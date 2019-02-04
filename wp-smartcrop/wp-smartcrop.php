@@ -3,7 +3,7 @@
  * Plugin Name: WP SmartCrop
  * Plugin URI: http://www.wpsmartcrop.com/
  * Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
- * Version: 1.5.0
+ * Version: 2.0.0
  * Author: Burlington Bytes
  * Author URI: https://www.burlingtonbytes.com
  * License: GPLv2 or later
@@ -12,7 +12,7 @@
 
 if( !class_exists('WP_Smart_Crop') ) {
 	class WP_Smart_Crop {
-		public  $version = '1.4.7';
+		public  $version = '2.0.0';
 		private $plugin_dir_path;
 		private $plugin_dir_url;
 		private $current_image = null;
@@ -50,7 +50,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 			add_action( 'edit_attachment' , array( $this, 'edit_attachment'  ) );
 
 			// Editor Functions
-			add_action( 'admin_head', array( $this, 'admin_head') );
+			add_action( 'wp_enqueue_media'         , array( $this, 'wp_enqueue_media' ) );
 			add_filter( 'attachment_fields_to_edit', array( $this, 'attachment_fields_to_edit' ), 10, 2 );
 
 			// Thumbnail Crop Functions (for legacy theme support and hard-crop applications)
@@ -81,6 +81,13 @@ if( !class_exists('WP_Smart_Crop') ) {
 			);
 
 			add_settings_field(
+				'wp_smartcrop_select_focus_mode',
+				__( 'Focus Mode', 'wpsmartcrop' ),
+				array( $this, 'wp_smartcrop_select_focus_mode' ),
+				'wp-smartcrop',
+				'wp-smartcrop-settings'
+			);
+			add_settings_field(
 				'wp_smartcrop_disable_thumbnail_generation',
 				__( 'Thumbnail Generation', 'wpsmartcrop' ),
 				array( $this, 'wp_smartcrop_disable_thumbnail_generation' ),
@@ -97,6 +104,11 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		function settings_sanitization_callback( $settings ) {
 			$sanitized = array();
+			if( isset( $settings['focus-mode'] ) && $settings['focus-mode'] ) {
+				$sanitized['focus-mode'] = $settings['focus-mode'];
+			} else {
+				$sanitized['focus-mode'] = 'power-lines';
+			}
 			if( isset( $settings['disable-thumbnails'] ) && $settings['disable-thumbnails'] ) {
 				$sanitized['disable-thumbnails'] = 1;
 			} else {
@@ -106,6 +118,28 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 
 		function add_settings_section() { }
+
+		function wp_smartcrop_select_focus_mode() {
+			$focus_mode = 'power-lines';
+			if( isset( $this->options['focus-mode'] ) ) {
+				$focus_mode = $this->options['focus-mode'];
+			}
+			?>
+			<label>
+				<span><?php _e( 'Select Focus Mode' ); ?></span>
+				<select name='wp-smartcrop-settings[focus-mode]'>
+					<option value="power-lines" <?php selected($focus_mode, 'power-lines'); ?>>Default (Power Lines)</option>
+					<option value="relative-position" <?php selected($focus_mode, 'relative-position'); ?>>Relative Position</option>
+				</select>
+			</label>
+			<p><em>
+				<?php
+				_e('Power Lines cropping will attempt to place the focal point at a 33.33%, 50%, or 66.67% position vertically and horizontally, to produce powerful compositions.');
+				echo "<br>";
+				_e('Relative Position cropping will attempt to maintain the position of the focal point, relative to the cropped dimensions.');
+				?></em></p>
+			<?php
+		}
 
 		function wp_smartcrop_disable_thumbnail_generation() {
 			$disable_thumbs = 0;
@@ -125,8 +159,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 
 		function admin_menu() {
-			add_submenu_page(
-				'tools.php',
+			add_options_page(
 				'WP SmartCrop',
 				'WP SmartCrop',
 				'manage_options',
@@ -200,20 +233,23 @@ if( !class_exists('WP_Smart_Crop') ) {
 			}
 		}
 
-		function admin_head() {
-			?>
-			<style type="text/css">
-				.wpsmartcrop_strip_pseudos:before {
-					display: none !important;
-				}
-				.wpsmartcrop_strip_pseudos:after {
-					display: none !important;
-				}
-			</style>
-			<?php
+		function wp_enqueue_media() {
+			wp_enqueue_script( 'wp-smartcrop-media-library', $this->plugin_dir_url . 'js/media-library.js', array( 'jquery' ), $this->version, true );
+			wp_enqueue_style( 'wp-smartcrop-media-library', $this->plugin_dir_url . 'css/media-library.css', array(), $this->version );
 		}
+
 		function attachment_fields_to_edit( $form_fields, $post ) {
 			if( substr($post->post_mime_type, 0, 5) == 'image' ) {
+				// get image width
+				$image_info = wp_get_attachment_metadata( $post->ID );
+				$width = false;
+				if( $image_info && !empty( $image_info['width'] ) ) {
+					$width = $image_info['width'];
+				} else {
+					// no width means not an image
+					return $form_fields;
+				}
+				// get current settings
 				$enabled = intval( get_post_meta( $post->ID, '_wpsmartcrop_enabled', true ) );
 				$focus  = get_post_meta( $post->ID, '_wpsmartcrop_image_focus', true );
 				if( !$focus || !is_array( $focus ) || !isset( $focus['left'] ) || !isset( $focus['top'] ) ) {
@@ -229,16 +265,66 @@ if( !class_exists('WP_Smart_Crop') ) {
 						);
 					}
 				}
+				$enabled_class = '';
+				if( $enabled == 1 ) {
+					$enabled_class = ' wpsmartcrop_interface_enabled';
+				}
+				// build image overlay
+				ob_start();
+				?>
+				<div class="wpsmartcrop_preview_wrap" style="max-width: <?php echo 3 * $width; ?>px;">
+					<?php echo wp_get_attachment_image( $post->ID, 'full' ); ?>
+					<div class="wpsmartcrop_gnomon">
+						<div class="wpsmartcrop_gnomon_h" style="top:  <?php echo $focus['top'];  ?>%;"></div>
+						<div class="wpsmartcrop_gnomon_v" style="left: <?php echo $focus['left']; ?>%;"></div>
+						<div class="wpsmartcrop_gnomon_c" style="top:  <?php echo $focus['top'];  ?>%; left: <?php echo $focus['left']; ?>%;"></div>
+					</div>
+				</div>
+				<?php
+				$image_overlay = ob_get_clean();
 
 				// build html for form interface
 				ob_start();
 				?>
-				<input type="checkbox" class="wpsmartcrop_enabled" id="wpsmartcrop_enabled" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_enabled]" value="1"<?php echo ( $enabled == 1 ) ? ' checked="checked"' : '';?> />
+				<input type="checkbox" class="wpsmartcrop_enabled" id="wpsmartcrop_enabled" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_enabled]" value="1"<?php checked( $enabled, 1 );?> />
 				<label for="wpsmartcrop_enabled">Enable Smart Cropping</label><br/>
-				<input type="hidden"   class="wpsmartcrop_image_focus_left" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][left]" value="<?php echo $focus['left']; ?>" />
-				<input type="hidden"   class="wpsmartcrop_image_focus_top"  name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][top]"  value="<?php echo $focus['top' ]; ?>" />
-				<em>Select a focal point for this image by clicking on the preview image</em>
-				<script src="<?php echo $this->plugin_dir_url;?>js/media-library.js?v=<?php echo esc_attr( $this->version ); ?>" type="text/javascript"></script>
+				<div class="wpsmartcrop_interface<?php echo $enabled_class; ?>">
+					<?php echo $image_overlay; ?>
+					<input type="hidden" class="wpsmartcrop_image_focus_left" name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][left]" value="<?php echo $focus['left']; ?>" />
+					<input type="hidden" class="wpsmartcrop_image_focus_top"  name="attachments[<?php echo $post->ID; ?>][_wpsmartcrop_image_focus][top]"  value="<?php echo $focus['top' ]; ?>" />
+					<button type="button" class="button wpsmartcrop_edit">Edit Focal Point</button>
+					<script type="template/html" class="wpsmartcrop_editor_template">
+						<div class="wpsmartcrop_editor">
+							<div class="wpsmartcrop_editor_backdrop wpsmartcrop_cancel"></div>
+							<div class="wpsmartcrop_editor_inner">
+								<?php echo $image_overlay; ?>
+								<div class="wpsmartcrop_editor_fields">
+									<h3>Focal Point</h3>
+									<div class="wpsmartcrop_editor_inputs">
+										<label>
+											Left:
+											<span class="wpsmartcrop_percent_wrap">
+												<input type="number" min="0" max="100" step="0.01" class="wpsmartcrop_temp_focus_left" value="" />
+												<span>%</span>
+											</span>
+										</label>
+										<label>
+											Top:
+											<span class="wpsmartcrop_percent_wrap">
+												<input type="number" min="0" max="100" step="0.01" class="wpsmartcrop_temp_focus_top" value="" />
+												<span>%</span>
+											</span>
+										</label>
+										<div class="wpsmartcrop_buttons">
+											<button type="button" class="button wpsmartcrop_cancel">Cancel</button>
+											<button type="button" class="button wpsmartcrop_apply">Apply</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</script>
+				</div>
 				<?php
 				$focal_point_html = ob_get_clean();
 				$form_fields = array(
@@ -309,6 +395,9 @@ if( !class_exists('WP_Smart_Crop') ) {
 		function wp_enqueue_scripts() {
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'jquery.wp-smartcrop', $this->plugin_dir_url . 'js/jquery.wp-smartcrop.min.js', array( 'jquery' ), $this->version, true );
+			wp_localize_script( 'jquery.wp-smartcrop', 'wpsmartcrop_options', array(
+				'focus_mode' => $this->options['focus-mode']
+			) );
 			wp_enqueue_style( 'wp-smart-crop-renderer', $this->plugin_dir_url . 'css/image-renderer.css', array(), $this->version );
 		}
 
@@ -483,22 +572,46 @@ if( !class_exists('WP_Smart_Crop') ) {
 			return false;
 		}
 		private function is_image_size_cropped( $size ) {
-			$_wp_additional_image_sizes = $GLOBALS['_wp_additional_image_sizes'];
+			$image_sizes = $this->get_image_sizes();
 			// array sizes are assumed to be cropped... use names, as suggested by WordPress
-			if( $size && is_array( $size ) ) {
+			if( is_array( $size ) ) {
 				return true;
 			}
 			if(!$size || $size == 'full' ) {
 				return false;
 			}
-			if( isset( $_wp_additional_image_sizes[ $size ] ) ) {
-				return (bool) intval( $_wp_additional_image_sizes[ $size ]['crop'] );
-			}
-			if( in_array( $size, array('thumbnail', 'medium', 'medium_large', 'large') ) ) {
-				return (bool) intval( get_option( $size . "_crop" ) );
+			if( isset( $image_sizes[ $size ] ) && isset( $image_sizes[ $size ]['crop'] ) ) {
+				return (bool) intval( $image_sizes[ $size ]['crop'] );
 			}
 			// if we can't find the size, lets assume it is cropped... it's a guess
 			return true;
+		}
+		private function get_image_sizes() {
+			global $_wp_additional_image_sizes;
+			$custom_sizes = $_wp_additional_image_sizes;
+			if( !is_array( $custom_sizes ) ) {
+				$custom_sizes = array();
+			}
+			$sizes = array();
+			foreach( get_intermediate_image_sizes() as $_size ) {
+				if( !in_array( $_size, $custom_sizes ) ) {
+					$temp = array(
+						'width'  => get_option( $_size . "_size_w" ),
+						'height' => get_option( $_size . "_size_h" ),
+						'crop'   => get_option( $_size . "_crop"   ),
+					);
+					if( $temp['width'] || $temp['height'] ) {
+						$sizes[ $_size ] = $temp;
+					}
+				} elseif( isset( $custom_sizes[ $_size ] ) ) {
+					$sizes[ $_size ] = shortcode_atts( array(
+						'width' => 0,
+						'height'=> 0,
+						'crop'  => true
+					), $custom_sizes[ $_size ] );
+				}
+			}
+			return $sizes;
 		}
 
 		private function extract_tags( $html, $tag, $selfclosing = null, $return_the_entire_tag = false, $charset = 'ISO-8859-1' ){

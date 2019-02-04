@@ -1,5 +1,5 @@
 /**
- * jQuery WP-SmartCrop v1.4.4
+ * jQuery SmartCrop v2.0.0
  * Copyright (c) 2017 Greg Schoppe
  * License: http://www.opensource.org/licenses/mit-license.php
  **/
@@ -12,6 +12,9 @@
 			// set to 'new' to force "objectFit" mode or
 			// set to 'old' to force "overflow: hidden" mode
 			'compatibility' : null,
+			// set to 'power-lines' to match focal points to rule-of-thirds or centers
+			// set to 'relative' to try to maintain the relative focal position
+			'focus_mode'    : 'power-lines'
 		}, options);
 
 		// localized version of a request animation frame polyfill by paul irish
@@ -84,12 +87,18 @@
 		// get dimensions to crop element to put the focus as close to a rule of
 		// thirds line, or the center, as possible
 		function get_crop_data($el) {
-			var get_smartcrop_offset = function(dim, orig_dim, focus_pos) {
-				var power_lines = [.33333, .5, .66667];
+			var get_smartcrop_offset = function(dim, orig_dim, focus_pos, focus_mode) {
+				if( !focus_mode ) {
+					focus_mode = 'power-lines';
+				}
 				focus_pos = focus_pos / 100;
-				var focus_target = closest(focus_pos, power_lines);
-				var offset = Math.round(focus_pos * orig_dim - focus_target * dim);
-				var max = orig_dim - dim;
+				var focus_target = focus_pos,
+					max = orig_dim - dim,
+					offset;
+				if( focus_mode == 'power-lines' ) {
+					focus_target = closest(focus_pos, [.33333, .5, .66667]);
+				}
+				offset = Math.round(focus_pos * orig_dim - focus_target * dim);
 				if(offset > max) {
 					offset = max;
 				}
@@ -97,27 +106,38 @@
 					offset = 0;
 				}
 				return -1 * offset;
+			};
+			var focal_point  = $el.data('smartcrop-focus'),
+				focus_mode   = $el.data('smartcrop-mode'),
+				natural_dims = [
+					( $el[0].naturalWidth  ) ? $el[0].naturalWidth  : $el[0].getAttribute('width'),
+					( $el[0].naturalHeight ) ? $el[0].naturalHeight : $el[0].getAttribute('height')
+				],
+				target_dims  = [
+					$el.width(),
+					$el.height()
+				],
+				final_dims = get_final_image_dims( natural_dims, target_dims ),
+				offsets = [0,0];
+			if( !focal_point ) {
+				focal_point = options.focal_point;
 			}
-			var focal_point  = $el.data('smartcrop-focus');
-			var natural_dims = [
-				( $el[0].naturalWidth  ) ? $el[0].naturalWidth  : $el[0].getAttribute('width'),
-				( $el[0].naturalHeight ) ? $el[0].naturalHeight : $el[0].getAttribute('height')
-			];
-			var target_dims  = [
-				$el.width(),
-				$el.height()
-			];
 			if( !focal_point || focal_point.length < 2 ||
 				!natural_dims[0] || !natural_dims[1] ||
 				!target_dims[0] || !target_dims[1] ) {
 				return false;
 			}
-			var final_dims = get_final_image_dims( natural_dims, target_dims );
-			var offsets = [0,0]
+			if( !focus_mode ) {
+				if( typeof window.wpsmartcrop_focus_mode !== 'undefined' ) {
+					focus_mode = options.focus_mode;
+				} else {
+					focus_mode = "power-lines";
+				}
+			}
 			if( target_dims[0]/target_dims[1] < final_dims[0]/final_dims[1] ) {
-				offsets[0] = get_smartcrop_offset(target_dims[0], final_dims[0], focal_point[0]);
+				offsets[0] = get_smartcrop_offset(target_dims[0], final_dims[0], focal_point[0], focus_mode);
 			} else {
-				offsets[1] = get_smartcrop_offset(target_dims[1], final_dims[1], focal_point[1]);
+				offsets[1] = get_smartcrop_offset(target_dims[1], final_dims[1], focal_point[1], focus_mode);
 			}
 			return {
 				final_width  : final_dims[0],
@@ -211,5 +231,24 @@
 
 // initialize for wp-smartcrop wordpress plugin
 jQuery(document).ready(function($) {
-	$('img.wpsmartcrop-image').wpsmartcrop();
+	if( typeof wpsmartcrop_options === 'undefined' ) {
+		wpsmartcrop_options = {};
+	}
+	var init = function() {
+		$('img.wpsmartcrop-image').wpsmartcrop(wpsmartcrop_options);
+	};
+	init();
+	// mutation observer to make smartcrop run after ajax actions
+	if ("MutationObserver" in window) {
+		// this should watch the entire document for new nodes, and trigger smartcrop when they are seen
+		var mutationObserver = new MutationObserver(function(mutations) {
+			init();
+		});
+		mutationObserver.observe(document.documentElement, {
+			attributes: false,
+			characterData: false,
+			childList: true,
+			subtree: true,
+		});
+	}
 });

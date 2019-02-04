@@ -49,10 +49,11 @@ manually.
 1. Upload images to your Media Library
 1. Select an image in the library, so that image details appear on the right
 1. Check the *Enable Smart Cropping* checkbox.
-1. Find the preview thumbnail of the image (at the top of the sidebar from the 'insert media' screen, or to the left on the media library details screen)
-1. Click the focal point of the image.  This should be the central subject, and the area of the image that we want in view at all times.  For a portrait, I recommend clicking an eye, or other powerful feature. You can change the focus at any time, simply by clicking on a new part of the image.
+1. click *edit focal point* to choose the location of your images focal point
+1. Click the focal point of the image in the modal that appears.  This should be the central subject, and the area of the image that we want in view at all times.  For a portrait, I recommend clicking an eye, or other powerful feature. You can change the focus at any time, simply by clicking on a new part of the image.
+1. Click *apply* so save your changes
 1. Insert the image into a page or post
-1. Style your image, using the *img.wpsmartcrop-image* selector
+1. Style your images with CSS, using the *img.wpsmartcrop-image* selector
 
 == Compatibility ==
 WP SmartCrop has been fully tested in the following browsers:
@@ -104,13 +105,19 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 2. The additions to the Media Library interface.
 
-3. Same additions shown in the Insert Media pane.
+3. Setting an image's focal point.
 
 
 == Changelog ==
 
+= 2.0.0 =
+* completely rework media library interface for ease of use and compatibility
+* add support for relative position mode
+* incorporate mutation observer for live ajax updates
+* fix support for setting focal point in JS
+
 = 1.5.0 =
-* fix compatibility with modals in the media library's grid view 
+* fix compatibility with modals in the media library's grid view
 
 = 1.4.7 =
 * fix misplaced parenthesis on count causing warnings on php 7

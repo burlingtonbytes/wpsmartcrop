@@ -1,95 +1,101 @@
 (function( $ ) {
-	var position_image_overlay = function( $image, $overlay ) {
-		var image_pos = $image.position();
-		var image_margin_left = $image.css('margin-left');
-		var image_margin_right = $image.css('margin-right');
-		$overlay.css({
-			'position'    : 'absolute',
-			'opacity'     : '0.4',
-			'top'         : image_pos.top,
-			'left'        : image_pos.left,
-			'width'       : $image.width()+'px',
-			'height'      : $image.height()+'px',
-			'margin-left' : image_margin_left,
-			'margin-right': image_margin_right
-		});
-
-		var gnomon_width  = parseInt( $('.wpsmartcrop_image_focus_left').val() ) + '%';
-		var gnomon_height = parseInt( $('.wpsmartcrop_image_focus_top').val() ) + '%';
-		$overlay.find('.wpsmartcrop_image_gnomon_left').width( gnomon_width  );
-		$overlay.find('.wpsmartcrop_image_gnomon_top' ).height( gnomon_height );
-
-		if( !$('.wpsmartcrop_enabled').is(':checked') ) {
-			$overlay.hide();
-			$image.parent().removeClass('wpsmartcrop_strip_pseudos');
-		} else {
-			$overlay.show();
-			$image.parent().addClass('wpsmartcrop_strip_pseudos');
+	function size_modal() {
+		var $modal = $('.wpsmartcrop_editor .wpsmartcrop_editor_inner'),
+			$img  = $modal.find('.wpsmartcrop_preview_wrap img'),
+			img_w = $img.attr('width'),
+			img_h = $img.attr('height'),
+			button_h = $modal.find('.wpsmartcrop_buttons').height(),
+			max_w = (window.innerWidth - 30) * 0.8,
+			max_h = (window.innerHeight - button_h - 30) * 0.8;
+		if( img_h / img_w * max_w > max_h ) {
+			max_w = img_w / img_h * max_h;
 		}
-	};
-
-	var load_overlay = function( $image ) {
-		var $gnomon_left = $('<div></div>').addClass('wpsmartcrop_image_gnomon_left').width(0).height('100%').css({
-			'position'      : 'absolute',
-			'top'           : 0,
-			'left'          : 0,
-			'margin'        : 0,
-			'padding'       : 0,
-			'box-sizing'    : 'border-box',
-			'border-right'  : '2px solid #070',
-			'box-shadow'    : 'inset -2px 0 0 0 #FFF, 2px 0 0 0 #FFF'
-		});
-		var $gnomon_top  = $('<div></div>').addClass('wpsmartcrop_image_gnomon_top').width('100%').height(0).css({
-			'position'      : 'absolute',
-			'top'           : 0,
-			'left'          : 0,
-			'margin'        : 0,
-			'padding'       : 0,
-			'box-sizing'    : 'border-box',
-			'border-bottom' : '2px solid #070',
-			'box-shadow'    : 'inset 0 -2px 0 0 #FFF, 0 2px 0 0 #FFF'
-		});
-		$('.wpsmartcrop_image_overlay').remove();
-		var $overlay = $('<div></div>').addClass('wpsmartcrop_image_overlay').append( $gnomon_left , $gnomon_top ).insertAfter($image);
-		$overlay.css({
-			cursor: 'pointer'
-		});
-		$(window).resize(function() {
-			clearTimeout( window.wpsmartcrop_image_overlay_resize_timeout );
-			window.wpsmartcrop_image_overlay_resize_timeout = setTimeout( function() {
-				position_image_overlay( $image, $overlay );
-			}, 50 );
-		});
-		position_image_overlay( $image, $overlay );
-
-		$('body').on('click', '.wpsmartcrop_image_overlay', function(e) {
-			var $this = $(this);
-			var offset = $this.offset();
-			var pos_x = e.pageX - offset.left;
-			var pos_y = e.pageY - offset.top;
-			var left  = pos_x / $this.width() * 100;
-			var top   = pos_y / $this.height() * 100;
-			$('.wpsmartcrop_image_focus_left').val( left ).change();
-			$('.wpsmartcrop_image_focus_top' ).val( top  ).change();
-			position_image_overlay( $image, $overlay );
-		});
-
-		$('.wpsmartcrop_enabled').change(function() {
-			position_image_overlay( $image, $overlay );
-		});
-	};
-
-	var $image = $('.media-frame-content .attachment-details .thumbnail img');
-	if( ( !$image || !$image.length ) && $('body').hasClass('post-type-attachment') ) {
-		$image = $('.wp_attachment_holder .wp_attachment_image img.thumbnail');
+		$modal.width( max_w + 30 );
 	}
-	console.log($image);
-	if( $image.prop('complete') ) {
-		load_overlay( $image );
-	} else {
-		$image.load(function() {
-			load_overlay( $image );
-		});
+	var resizeDebounce = null;
+	$(window).resize(function() {
+		clearTimeout(resizeDebounce);
+		setTimeout(function() {
+			size_modal();
+		}, 200);
+	});
+
+	function round_to_precision( number, precision ) {
+		var multiplier = Math.pow(10, precision);
+		return Math.round( number * multiplier ) / multiplier;
+	}
+	function position_gnomon($wrapper, left, top) {
+		$wrapper.find('.wpsmartcrop_gnomon_h').css('top' , top  + '%');
+		$wrapper.find('.wpsmartcrop_gnomon_v').css('left', left + '%');
+		$wrapper.find('.wpsmartcrop_gnomon_c').css('top' , top  + '%').css('left', left + '%');
 	}
 
+	// Preview interface
+	$('body').on('click', '.wpsmartcrop_editor .wpsmartcrop_preview_wrap', function(e) {
+		var $this = $(this),
+			$editor = $this.closest('.wpsmartcrop_editor'),
+			offset = $this.offset(),
+			pos_x = e.pageX - offset.left,
+			pos_y = e.pageY - offset.top,
+			left  = round_to_precision( pos_x / $this.width() * 100, 2 ),
+			top   = round_to_precision( pos_y / $this.height() * 100, 2);
+		position_gnomon( $this, left, top );
+		//populate the form fields
+		$editor.find('.wpsmartcrop_temp_focus_left').val( left );
+		$editor.find('.wpsmartcrop_temp_focus_top' ).val( top  );
+	});
+	$('body').on('input', '.wpsmartcrop_editor .wpsmartcrop_temp_focus_left, .wpsmartcrop_editor .wpsmartcrop_temp_focus_top', function(e) {
+		var $this = $(this),
+			$editor = $this.closest('.wpsmartcrop_editor'),
+			$preview = $editor.find('.wpsmartcrop_preview_wrap'),
+			left  = $editor.find('.wpsmartcrop_temp_focus_left').val(),
+			top   = $editor.find('.wpsmartcrop_temp_focus_top').val();
+		position_gnomon( $preview, left, top );
+	});
+
+	// show/hide smartcrop interface
+	$('body').on('change', '.wpsmartcrop_enabled', function(e) {
+		var $sc_settings = $('.wpsmartcrop_interface');
+		if( $(this).is(':checked') ) {
+			$sc_settings.addClass('wpsmartcrop_interface_enabled');
+		} else {
+			$sc_settings.removeClass('wpsmartcrop_interface_enabled');
+		}
+	});
+
+	// show editor
+	$('body').on('click', '.wpsmartcrop_interface .wpsmartcrop_edit', function(e) {
+		var $interface = $(this).closest('.wpsmartcrop_interface'),
+			editor_html = $interface.find('.wpsmartcrop_editor_template').html(),
+			$editor = $(editor_html),
+			$preview = $editor.find('.wpsmartcrop_preview_wrap'),
+			left  = round_to_precision($interface.find('.wpsmartcrop_image_focus_left').val(), 2),
+			top   = round_to_precision($interface.find('.wpsmartcrop_image_focus_top' ).val(), 2);
+		$editor.find('.wpsmartcrop_temp_focus_left').val( left );
+		$editor.find('.wpsmartcrop_temp_focus_top' ).val( top  );
+		$editor.appendTo('body');
+		position_gnomon( $preview, left, top );
+		size_modal();
+	});
+
+	// cancel editor
+	$('body').on('click', '.wpsmartcrop_editor .wpsmartcrop_cancel', function(e) {
+		var $this = $(this),
+			$editor = $this.closest('.wpsmartcrop_editor');
+		$editor.remove();
+	});
+
+	// save editor
+	$('body').on('click', '.wpsmartcrop_editor .wpsmartcrop_apply', function(e) {
+		var $this = $(this),
+			$interface = $('.wpsmartcrop_interface'),
+			$editor = $this.closest('.wpsmartcrop_editor'),
+			$preview = $interface.children('.wpsmartcrop_preview_wrap'),
+			left  = $editor.find('.wpsmartcrop_temp_focus_left').val(),
+			top   = $editor.find('.wpsmartcrop_temp_focus_top' ).val();
+		$interface.find('.wpsmartcrop_image_focus_left').val( left );
+		$interface.find('.wpsmartcrop_image_focus_top' ).val( top  ).change();
+		position_gnomon( $preview, left, top );
+		$editor.remove();
+	});
 })( jQuery );

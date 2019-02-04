@@ -1,0 +1,141 @@
+/* Preview */
+.wpsmartcrop_preview_wrap {
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+}
+.wpsmartcrop_preview_wrap img {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 0;
+	padding: 0;
+}
+.wpsmartcrop_preview_wrap .wpsmartcrop_gnomon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: rgba(0,0,0,0.2);
+}
+.wpsmartcrop_preview_wrap .wpsmartcrop_gnomon div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	background-color: #070;
+	box-shadow: 0 0 0 2px #FFF;
+}
+.wpsmartcrop_preview_wrap .wpsmartcrop_gnomon .wpsmartcrop_gnomon_h {
+	width: 100%;
+	height: 2px;
+	transform: translateY(-50%);
+}
+.wpsmartcrop_preview_wrap .wpsmartcrop_gnomon .wpsmartcrop_gnomon_v {
+	height: 100%;
+	width: 2px;
+	transform: translateX(-50%);
+}
+.wpsmartcrop_preview_wrap .wpsmartcrop_gnomon .wpsmartcrop_gnomon_c {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	transform: translate(-50%,-50%);
+	box-shadow: none;
+}
+
+/* Interface */
+.wpsmartcrop_interface {
+	position: relative;
+	width: 200px;
+	max-width: 100%;
+	margin: 10px 0;
+	display: none;
+}
+.wpsmartcrop_interface.wpsmartcrop_interface_enabled {
+	display: block;
+}
+.wpsmartcrop_interface .button {
+	display: block;
+	margin: 10px auto;
+}
+
+/* editor */
+.wpsmartcrop_editor {
+	display: block;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 200000;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_backdrop {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.6667);
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	background-color: #f3f3f3;
+	border: 1px solid #ddd;
+	max-width: 80%;
+	padding: 10px;
+	overflow: hidden;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs {
+	margin-left: -10px;
+	margin-right: -10px;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs::after {
+	display: block;
+	content: "";
+	clear: both;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs label,
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs .wpsmartcrop_buttons {
+	box-sizing: border-box;
+	display: block;
+	width: 33.333%;
+	float: left;
+	padding: 0 10px;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs label .wpsmartcrop_percent_wrap {
+	display: block;
+	position: relative;
+	width: 100%;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs label .wpsmartcrop_percent_wrap input {
+	display: block;
+	padding-right: 25px;
+	display: block;
+	width: 100%;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs label .wpsmartcrop_percent_wrap span {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	margin: 6px 0;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs .wpsmartcrop_buttons button {
+	display: block;
+	margin: 19px auto 0;
+	width: 49%;
+	float: left;
+}
+.wpsmartcrop_editor .wpsmartcrop_editor_inputs .wpsmartcrop_buttons button:first-child {
+	margin-right: 2%;
+}

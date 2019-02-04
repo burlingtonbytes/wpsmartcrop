@@ -29,24 +29,32 @@
 	margin: 0;
 	padding: 0;
 	background-color: #070;
-	box-shadow: 0 0 0 2px #FFF;
+	-webkit-box-shadow: 0 0 0 2px #FFF;
+	        box-shadow: 0 0 0 2px #FFF;
 }
 .wpsmartcrop_preview_wrap .wpsmartcrop_gnomon .wpsmartcrop_gnomon_h {
 	width: 100%;
 	height: 2px;
-	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	    -ms-transform: translateY(-50%);
+	        transform: translateY(-50%);
 }
 .wpsmartcrop_preview_wrap .wpsmartcrop_gnomon .wpsmartcrop_gnomon_v {
 	height: 100%;
 	width: 2px;
-	transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
+	    -ms-transform: translateX(-50%);
+	        transform: translateX(-50%);
 }
 .wpsmartcrop_preview_wrap .wpsmartcrop_gnomon .wpsmartcrop_gnomon_c {
 	width: 12px;
 	height: 12px;
 	border-radius: 50%;
-	transform: translate(-50%,-50%);
-	box-shadow: none;
+	-webkit-transform: translate(-50%,-50%);
+	    -ms-transform: translate(-50%,-50%);
+	        transform: translate(-50%,-50%);
+	-webkit-box-shadow: none;
+	        box-shadow: none;
 }
 
 /* Interface */
@@ -89,7 +97,9 @@
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	transform: translate(-50%,-50%);
+	-webkit-transform: translate(-50%,-50%);
+	    -ms-transform: translate(-50%,-50%);
+	        transform: translate(-50%,-50%);
 	background-color: #f3f3f3;
 	border: 1px solid #ddd;
 	max-width: 80%;
@@ -107,7 +117,8 @@
 }
 .wpsmartcrop_editor .wpsmartcrop_editor_inputs label,
 .wpsmartcrop_editor .wpsmartcrop_editor_inputs .wpsmartcrop_buttons {
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	display: block;
 	width: 33.333%;
 	float: left;

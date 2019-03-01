@@ -607,7 +607,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 					$sizes[ $_size ] = shortcode_atts( array(
 						'width' => 0,
 						'height'=> 0,
-						'crop'  => true
+						'crop'  => false
 					), $custom_sizes[ $_size ] );
 				}
 			}

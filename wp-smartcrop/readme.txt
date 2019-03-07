@@ -109,6 +109,8 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 
 == Changelog ==
+= 2.0.2
+* Fix admin url
 
 = 2.0.1
 * Fix custom image size issue

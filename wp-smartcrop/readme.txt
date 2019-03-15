@@ -1,5 +1,5 @@
 === WP SmartCrop ===
-Contributors: burlingtonbytes
+Contributors: burlingtonbytes, gschoppe
 Tags: image, crop, cropping, resize, aspect ratio, fit, size, advanced, simple, media, library, photography, featured image, content, responsive, design, smart, intelligent, live
 Requires at least: 3.5.0
 Tested up to: 5.1

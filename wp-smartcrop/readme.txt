@@ -15,7 +15,7 @@ WP SmartCrop will crop your images on-the-fly to match your CSS, keeping the mai
 WP SmartCrop allows you to set the 'focal point' of any image, right from the media library, then crops your images to match your css rules *(no more squished aspect ratios)*, keeping that focal point, not only in view, but as near as possible to a 'rule of thirds' position in the image.  The results are powerful, composed photos at any screen size, with any constraints.
 
 ---
-Learn More at: **[http://www.wpsmartcrop.com/](http://www.wpsmartcrop.com)**
+Learn More at: **[https://www.wpsmartcrop.com/](https://www.wpsmartcrop.com)**
 ---
 
 * Visually select your images' focal points with an intuitive click-based interface
@@ -71,7 +71,7 @@ WP SmartCrop has been fully tested in the following browsers:
 This is by no means an exhaustive list of supported devices; it just represents our primary target platforms.
 
 == Website ==
-[http://www.wpsmartcrop.com/](http://www.wpsmartcrop.com)
+[https://www.wpsmartcrop.com/](https://www.wpsmartcrop.com)
 
 = Please Rate/Review and Enjoy =
 Your Ratings and Reviews help us to direct our development, and help other users know what to expect.
@@ -88,7 +88,7 @@ A. WP SmartCrop is designed to simplify the process for styling your responsive 
         height: 200px;
     }
 
-Once you've verified that the plugin is working, go wild!  Some example css for inspiration can be found at [http://www.wpsmartcrop.com/demos](http://www.wpsmartcrop.com/demos)
+Once you've verified that the plugin is working, go wild!  Some example css for inspiration can be found at [https://www.wpsmartcrop.com/demos](https://www.wpsmartcrop.com/demos)
 
 = Q. Why can't you choose the focal points for me? =
 A. We're currently working on a "pro" version that will do exactly that. If you're interested in the feature, let us know as a feature request.  It always helps to see people interested in further developments.

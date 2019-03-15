@@ -1,11 +1,11 @@
 <?php if(!defined('ABSPATH')) { die(); } // Include in all php files, to prevent direct execution
 /**
  * Plugin Name: WP SmartCrop
- * Plugin URI: http://www.wpsmartcrop.com/
+ * Plugin URI: https://www.wpsmartcrop.com/
  * Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
  * Version: 2.0.2
- * Author: Burlington Bytes
- * Author URI: https://www.burlingtonbytes.com
+ * Author: Bytes.co
+ * Author URI: https://bytes.co
  * License: GPLv2 or later
  * Text Domain: wpsmartcrop
  **/
@@ -67,7 +67,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		function plugin_action_links( $links ) {
 			$links[] = '<a href="'. esc_url( get_admin_url(null, 'options-general.php?page=wp-smartcrop') ) .'">Settings</a>';
-			//$links[] = '<a href="http://www.wpsmartcrop.com/addons" target="_blank">Get Addons</a>';
+			//$links[] = '<a href="https://www.wpsmartcrop.com/addons" target="_blank">Get Addons</a>';
 			return $links;
 		}
 

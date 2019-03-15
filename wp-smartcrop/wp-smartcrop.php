@@ -67,7 +67,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 
 		function plugin_action_links( $links ) {
 			$links[] = '<a href="'. esc_url( get_admin_url(null, 'options-general.php?page=wp-smartcrop') ) .'">Settings</a>';
-			$links[] = '<a href="http://www.wpsmartcrop.com/addons" target="_blank">Get Addons</a>';
+			//$links[] = '<a href="http://www.wpsmartcrop.com/addons" target="_blank">Get Addons</a>';
 			return $links;
 		}
 

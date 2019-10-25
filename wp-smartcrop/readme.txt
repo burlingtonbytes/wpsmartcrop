@@ -2,7 +2,7 @@
 Contributors: burlingtonbytes, gschoppe
 Tags: image, crop, cropping, resize, aspect ratio, fit, size, advanced, simple, media, library, photography, featured image, content, responsive, design, smart, intelligent, live
 Requires at least: 3.5.0
-Tested up to: 5.1
+Tested up to: 5.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -94,10 +94,10 @@ Once you've verified that the plugin is working, go wild!  Some example css for 
 A. We're currently working on a "pro" version that will do exactly that. If you're interested in the feature, let us know as a feature request.  It always helps to see people interested in further developments.
 
 = Q. Can I integrate WP Smart Crop in my theme? =
-A. We love to see theme integrations, but reach out to us first, at admin@wpsmartcrop.com.  We maintain a separate, paid branch for theme developers that has some necessary changes and integrations incorporated, and there are some caveats that should be followed to make sure your theme is fully compatible with our future roadmap.  Otherwise, feel free to list it as a suggested plugin with your theme.
+A. We love to see theme integrations, but reach out to us first, at support@bytes.co.  We maintain a separate, paid branch for theme developers that has some necessary changes and integrations incorporated, and there are some caveats that should be followed to make sure your theme is fully compatible with our future roadmap.  Otherwise, feel free to list it as a suggested plugin with your theme.
 
 = Q. Your plugin is bad, and you should feel bad! =
-A. That's not really a question, but at least our moms like us. Feel free to send your 'constructive criticism' to admin@wpsmartcrop.com, or leave us a review/rating.
+A. That's not really a question, but at least our moms like us. Feel free to send your 'constructive criticism' to support@bytes.co, or leave us a review/rating.
 
 == Screenshots ==
 
@@ -109,6 +109,9 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 
 == Changelog ==
+
+= 2.0.4 =
+* Update admin email
 
 = 2.0.3 =
 * Remove mutation observer for IE11

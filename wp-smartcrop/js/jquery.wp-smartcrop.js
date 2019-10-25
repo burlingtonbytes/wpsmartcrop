@@ -238,8 +238,8 @@ jQuery(document).ready(function($) {
 		$('img.wpsmartcrop-image').wpsmartcrop(wpsmartcrop_options);
 	};
 	init();
-  var ua = ua || navigator.userAgent;
-  var isIE11 = ua.indexOf('Trident/7') !== -1;
+	var ua = ua || navigator.userAgent;
+	var isIE11 = ua.indexOf('Trident/7') !== -1;
 	// mutation observer to make smartcrop run after ajax actions
 	if ("MutationObserver" in window && !isIE11) {
 		// this should watch the entire document for new nodes, and trigger smartcrop when they are seen

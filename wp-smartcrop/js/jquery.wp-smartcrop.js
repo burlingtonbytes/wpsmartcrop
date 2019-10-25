@@ -1,5 +1,5 @@
 /**
- * jQuery SmartCrop v2.0.3
+ * jQuery SmartCrop v2.0.4
  * Copyright (c) 2017 Greg Schoppe
  * License: http://www.opensource.org/licenses/mit-license.php
  **/

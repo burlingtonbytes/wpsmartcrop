@@ -110,6 +110,9 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 == Changelog ==
 
+= 2.0.3 =
+* Remove mutation observer for IE11
+
 = 2.0.2 =
 * Fix admin url
 

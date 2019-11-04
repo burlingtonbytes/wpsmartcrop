@@ -3,7 +3,7 @@
  * Plugin Name: WP SmartCrop
  * Plugin URI: https://www.wpsmartcrop.com/
  * Description: Style your images exactly how you want them to appear, for any screen size, and never get a cut-off face.
- * Version: 2.0.4
+ * Version: 2.0.5
  * Author: Bytes.co
  * Author URI: https://bytes.co
  * License: GPLv2 or later
@@ -12,7 +12,7 @@
 
 if( !class_exists('WP_Smart_Crop') ) {
 	class WP_Smart_Crop {
-		public  $version = '2.0.4';
+		public  $version = '2.0.5';
 		private $plugin_dir_path;
 		private $plugin_dir_url;
 		private $current_image = null;
@@ -339,28 +339,42 @@ if( !class_exists('WP_Smart_Crop') ) {
 		}
 
 		function edit_attachment( $attachment_id ) {
-			if( isset( $_REQUEST['attachments'] ) && isset( $_REQUEST['attachments'][$attachment_id] ) ) {
-				$attachment = $_REQUEST['attachments'][$attachment_id];
+			if( ! isset( $_REQUEST['attachments'] ) || ! isset( $_REQUEST['attachments'][$attachment_id] ) ) {
+				return;
+			}
+			$attachment = $_REQUEST['attachments'][$attachment_id];
 
-				$old_enabled = get_post_meta( $attachment_id, '_wpsmartcrop_enabled', true );
-				$old_focus   = get_post_meta( $attachment_id, '_wpsmartcrop_image_focus', true );
+			$smartcrop_enabled = boolval( isset( $attachment['_wpsmartcrop_enabled'] ) && $attachment['_wpsmartcrop_enabled'] == 1 );
+			$smartcrop_image_focus = array(
+				'top'  => null,
+				'left' => null
+			);
 
-				if( isset( $attachment['_wpsmartcrop_enabled'] ) && $attachment['_wpsmartcrop_enabled'] == 1 ) {
-					$new_enabled = 1;
-				} else {
-					$new_enabled = false;
+			if ( isset( $attachment['_wpsmartcrop_image_focus'] ) ) {
+				if ( isset( $attachment['_wpsmartcrop_image_focus']['top'] ) ) {
+					$smartcrop_image_focus['top']	= number_format( $attachment['_wpsmartcrop_image_focus']['top'], 2 );
 				}
-				if( isset( $attachment['_wpsmartcrop_image_focus'] ) ) {
-					$new_focus = $attachment['_wpsmartcrop_image_focus'];
-				} else {
-					$new_focus = false;
+				if ( isset( $attachment['_wpsmartcrop_image_focus']['left' ] )) {
+					$smartcrop_image_focus['left']	= number_format ($attachment['_wpsmartcrop_image_focus']['left'], 2 );
 				}
-				if( ( $new_enabled != $old_enabled ) || ( serialize( $new_focus ) != serialize( $old_focus ) ) ) {
-					update_post_meta( $attachment_id, '_wpsmartcrop_enabled', $new_enabled );
-					update_post_meta( $attachment_id, '_wpsmartcrop_image_focus', $new_focus );
-					if( !( isset( $this->options['disable-thumbnails'] ) && $this->options['disable-thumbnails'] ) ) {
-						$this->regenerate_thumbnails( $attachment_id );
-					}
+			}
+			if ( $smartcrop_image_focus['top'] === null && $smartcrop_image_focus['left'] === null ) {
+				$smartcrop_image_focus = false;
+			}
+
+			unset($attachment);
+
+			$old_enabled = get_post_meta( $attachment_id, '_wpsmartcrop_enabled', true );
+			$old_focus   = get_post_meta( $attachment_id, '_wpsmartcrop_image_focus', true );
+
+			$new_enabled = $smartcrop_enabled;
+			$new_focus   = $smartcrop_image_focus;
+
+			if( ( $new_enabled != $old_enabled ) || ( serialize( $new_focus ) != serialize( $old_focus ) ) ) {
+				update_post_meta( $attachment_id, '_wpsmartcrop_enabled', $new_enabled );
+				update_post_meta( $attachment_id, '_wpsmartcrop_image_focus', $new_focus );
+				if( !( isset( $this->options['disable-thumbnails'] ) && $this->options['disable-thumbnails'] ) ) {
+					$this->regenerate_thumbnails( $attachment_id );
 				}
 			}
 		}

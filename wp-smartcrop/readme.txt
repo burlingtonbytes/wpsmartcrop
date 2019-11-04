@@ -110,7 +110,7 @@ A. That's not really a question, but at least our moms like us. Feel free to sen
 
 == Changelog ==
 
-= 2.0.4 =
+= 2.0.5 =
 * Fix potential security concern
 
 = 2.0.4 =

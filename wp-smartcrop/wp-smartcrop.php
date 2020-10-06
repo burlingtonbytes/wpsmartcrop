@@ -410,7 +410,7 @@ if( !class_exists('WP_Smart_Crop') ) {
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'jquery.wp-smartcrop', $this->plugin_dir_url . 'js/jquery.wp-smartcrop.min.js', array( 'jquery' ), $this->version, true );
 			wp_localize_script( 'jquery.wp-smartcrop', 'wpsmartcrop_options', array(
-				'focus_mode' => $this->options['focus-mode']
+				'focus_mode' => ( is_array($this->options) && !empty($this->options['focus-mode']) ) ? $this->options['focus-mode'] : 'power-lines'
 			) );
 			wp_enqueue_style( 'wp-smart-crop-renderer', $this->plugin_dir_url . 'css/image-renderer.css', array(), $this->version );
 		}
